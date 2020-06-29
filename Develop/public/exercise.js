@@ -1,3 +1,4 @@
+//! Declare Elements As Variables
 const workoutTypeSelect = document.querySelector("#type");
 const cardioForm = document.querySelector(".cardio-form");
 const resistanceForm = document.querySelector(".resistance-form");
@@ -17,21 +18,21 @@ const newWorkout = document.querySelector(".new-workout")
 let workoutType = null;
 let shouldNavigateAway = false;
 
+//! If no workouts exist, create workout
 async function initExercise() {
   let workout;
 
   if (location.search.split("=")[1] === undefined) {
     workout = await API.createWorkout()
-    console.log(workout)
   }
   if (workout) {
     location.search = "?id=" + workout._id;
   }
-
 }
 
 initExercise();
 
+//! Change Workout Type
 function handleWorkoutTypeChange(event) {
   workoutType = event.target.value;
 
@@ -49,6 +50,7 @@ function handleWorkoutTypeChange(event) {
   validateInputs();
 }
 
+//! Input Validation
 function validateInputs() {
   let isValid = true;
 
@@ -95,6 +97,7 @@ function validateInputs() {
   }
 }
 
+//! Form Submit
 async function handleFormSubmit(event) {
   event.preventDefault();
 
@@ -113,12 +116,14 @@ async function handleFormSubmit(event) {
     workoutData.reps = Number(repsInput.value.trim());
     workoutData.duration = Number(resistanceDurationInput.value.trim());
   }
-
+  console.log(workoutData);
   await API.addExercise(workoutData);
   clearInputs();
   toast.classList.add("success");
+  console.log("Successfully Added")
 }
 
+//! Toast Animation
 function handleToastAnimationEnd() {
   toast.removeAttribute("class");
   if (shouldNavigateAway) {
@@ -126,6 +131,7 @@ function handleToastAnimationEnd() {
   }
 }
 
+//! Clear Form Inputs
 function clearInputs() {
   cardioNameInput.value = "";
   nameInput.value = "";
@@ -137,20 +143,28 @@ function clearInputs() {
   weightInput.value = "";
 }
 
+//! Show Specific Form Based On Selection
 if (workoutTypeSelect) {
   workoutTypeSelect.addEventListener("change", handleWorkoutTypeChange);
 }
+
+//! Add Event Listener to Complete Button
 if (completeButton) {
   completeButton.addEventListener("click", function (event) {
     shouldNavigateAway = true;
     handleFormSubmit(event);
   });
 }
+
+//! Add Event Listener to Add Exercise Button
 if (addButton) {
   addButton.addEventListener("click", handleFormSubmit);
 }
+
+//! Add Event Listener to Toast
 toast.addEventListener("animationend", handleToastAnimationEnd);
 
+//! Add Event Listeners to Inputs
 document
   .querySelectorAll("input")
   .forEach(element => element.addEventListener("input", validateInputs));
