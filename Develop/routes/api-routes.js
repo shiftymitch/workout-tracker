@@ -53,9 +53,13 @@ router.get("/api/workouts", (req, res) => {
 });
 
 router.get("/api/workouts/range", (req, res) => {
-    Workout.find({
-        //! need to finish
-    })
+    Workout.find({})
+      .then(dbWorkout => {
+        res.json(dbWorkout);
+      })
+      .catch(err => {
+        res.status(400).json(err);
+      });
 });
 
 router.get("/exercise", (req, res) => {
